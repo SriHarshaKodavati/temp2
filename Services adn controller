@@ -1,0 +1,224 @@
+// LoanApplicationService.java
+package com.scb.Loan_Origination.Loan_Origination.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.scb.Loan_Origination.Loan_Origination.model.*;
+import com.scb.Loan_Origination.Loan_Origination.repository.LoanApplicationRepository;
+import java.math.BigDecimal;
+
+@Service
+public class LoanApplicationService {
+    
+    @Autowired
+    private LoanApplicationRepository loanApplicationRepository;
+    
+    public LoanApplication createNewApplication() {
+        LoanApplication application = new LoanApplication();
+        application.setStatus("DRAFT");
+        return loanApplicationRepository.save(application);
+    }
+    
+    public LoanApplication savePersonalDetails(Long applicationId, PersonalDetails details) {
+        LoanApplication application = getApplicationById(applicationId);
+        
+        if (application.getPersonalDetails() != null) {
+            PersonalDetails existing = application.getPersonalDetails();
+            existing.setFullName(details.getFullName());
+            existing.setPhoneNumber(details.getPhoneNumber());
+            existing.setMaritalStatus(details.getMaritalStatus());
+            existing.setPanNumber(details.getPanNumber());
+            existing.setPassportNumber(details.getPassportNumber());
+            existing.setGender(details.getGender());
+            existing.setCurrentAddress(details.getCurrentAddress());
+            existing.setPermanentAddress(details.getPermanentAddress());
+            existing.setDateOfBirth(details.getDateOfBirth());
+        } else {
+            details.setLoanApplication(application);
+            application.setPersonalDetails(details);
+        }
+        
+        return loanApplicationRepository.save(application);
+    }
+    
+    public LoanApplication saveEmploymentDetails(Long applicationId, EmploymentDetails details) {
+        LoanApplication application = getApplicationById(applicationId);
+        
+        if (application.getEmploymentDetails() != null) {
+            EmploymentDetails existing = application.getEmploymentDetails();
+            existing.setEmploymentType(details.getEmploymentType());
+            existing.setEmployerName(details.getEmployerName());
+            existing.setJobTitle(details.getJobTitle());
+            existing.setMonthlyIncome(details.getMonthlyIncome());
+            existing.setUnemploymentIncome(details.getUnemploymentIncome());
+            existing.setYearsOfExperience(details.getYearsOfExperience());
+            existing.setOfficeAddress(details.getOfficeAddress());
+        } else {
+            details.setLoanApplication(application);
+            application.setEmploymentDetails(details);
+        }
+        
+        return loanApplicationRepository.save(application);
+    }
+    
+    public LoanApplication saveLoanDetails(Long applicationId, LoanDetails details) {
+        LoanApplication application = getApplicationById(applicationId);
+        
+        if (application.getLoanDetails() != null) {
+            LoanDetails existing = application.getLoanDetails();
+            existing.setLoanType(details.getLoanType());
+            existing.setLoanAmount(details.getLoanAmount());
+            existing.setLoanTenure(details.getLoanTenure());
+            existing.setLoanPurpose(details.getLoanPurpose());
+        } else {
+            details.setLoanApplication(application);
+            application.setLoanDetails(details);
+        }
+        
+        return loanApplicationRepository.save(application);
+    }
+    
+    public LoanApplication saveDocumentDetails(Long applicationId, DocumentDetails details) {
+        LoanApplication application = getApplicationById(applicationId);
+        
+        if (application.getDocumentDetails() != null) {
+            DocumentDetails existing = application.getDocumentDetails();
+            existing.setPanCardPath(details.getPanCardPath());
+            existing.setAadhaarCardPath(details.getAadhaarCardPath());
+            existing.setSalarySlipPath(details.getSalarySlipPath());
+            existing.setBankStatementPath(details.getBankStatementPath());
+            existing.setPhotoPath(details.getPhotoPath());
+        } else {
+            details.setLoanApplication(application);
+            application.setDocumentDetails(details);
+        }
+        
+        return loanApplicationRepository.save(application);
+    }
+    
+    public LoanApplication saveExistingLoanDetails(Long applicationId, ExistingLoanDetails details) {
+        LoanApplication application = getApplicationById(applicationId);
+        
+        if (application.getExistingLoanDetails() != null) {
+            ExistingLoanDetails existing = application.getExistingLoanDetails();
+            existing.setFullName(details.getFullName());
+            existing.setLoanType(details.getLoanType());
+            existing.setContactNumber(details.getContactNumber());
+            existing.setLender(details.getLender());
+            existing.setEmail(details.getEmail());
+            existing.setOutstandingAmount(details.getOutstandingAmount());
+            existing.setAddress(details.getAddress());
+            existing.setEmiTenure(details.getEmiTenure());
+        } else {
+            details.setLoanApplication(application);
+            application.setExistingLoanDetails(details);
+        }
+        
+        return loanApplicationRepository.save(application);
+    }
+    
+    public LoanApplication saveReferenceDetails(Long applicationId, ReferenceDetails details) {
+        LoanApplication application = getApplicationById(applicationId);
+        
+        if (application.getReferenceDetails() != null) {
+            ReferenceDetails existing = application.getReferenceDetails();
+            existing.setFullName(details.getFullName());
+            existing.setRelationshipWithApplicant(details.getRelationshipWithApplicant());
+            existing.setContactNumber(details.getContactNumber());
+            existing.setAddress(details.getAddress());
+        } else {
+            details.setLoanApplication(application);
+            application.setReferenceDetails(details);
+        }
+        
+        return loanApplicationRepository.save(application);
+    }
+    
+    public LoanApplication updateApplicationStatus(Long applicationId, String status) {
+        LoanApplication application = getApplicationById(applicationId);
+        application.setStatus(status);
+        return loanApplicationRepository.save(application);
+    }
+    
+    public LoanApplication getApplicationById(Long id) {
+        return loanApplicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found with id: " + id));
+    }
+}
+
+// LoanApplicationController.java
+package com.scb.Loan_Origination.Loan_Origination.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.scb.Loan_Origination.Loan_Origination.model.*;
+import com.scb.Loan_Origination.Loan_Origination.service.LoanApplicationService;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/applications")
+@CrossOrigin(origins = {"http://localhost:3000"})
+public class LoanApplicationController {
+
+    @Autowired
+    private LoanApplicationService loanApplicationService;
+
+    @PostMapping("/create")
+    public ResponseEntity<Map<String, Object>> createApplication() {
+        try {
+            LoanApplication application = loanApplicationService.createNewApplication();
+            // Return only necessary data to avoid circular references
+            return ResponseEntity.ok(Map.of(
+                "id", application.getId(),
+                "status", application.getStatus(),
+                "createdAt", application.getCreatedAt(),
+                "updatedAt", application.getUpdatedAt()
+            ));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{id}/personal-details")
+    public ResponseEntity<Map<String, Object>> savePersonalDetails(
+            @PathVariable Long id,
+            @RequestBody PersonalDetails details) {
+        try {
+            LoanApplication application = loanApplicationService.savePersonalDetails(id, details);
+            return ResponseEntity.ok(Map.of(
+                "id", application.getId(),
+                "status", application.getStatus(),
+                "message", "Personal details saved successfully"
+            ));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{id}/employment-details")
+    public ResponseEntity<Map<String, Object>> saveEmploymentDetails(
+            @PathVariable Long id,
+            @RequestBody EmploymentDetails details) {
+        try {
+            LoanApplication application = loanApplicationService.saveEmploymentDetails(id, details);
+            return ResponseEntity.ok(Map.of(
+                "id", application.getId(),
+                "status", application.getStatus(),
+                "message", "Employment details saved successfully"
+            ));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{id}/loan-details")
+    public ResponseEntity<Map<String, Object>> saveLoanDetails(
+            @PathVariable Long id,
+            @RequestBody LoanDetails details) {
+        try {
+            LoanApplication application = loanApplicationService.saveLoanDetails(id, details);
+            return ResponseEntity.ok(
