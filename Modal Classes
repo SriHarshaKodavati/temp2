@@ -1,0 +1,200 @@
+// LoanDetails.java
+package com.scb.Loan_Origination.Loan_Origination.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "loan_details")
+public class LoanDetails {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String loanType;
+    private Double loanAmount;
+    private Integer loanTenure;
+    private String loanPurpose;
+    
+    @OneToOne
+    @JoinColumn(name = "loan_application_id")
+    @JsonBackReference("application-loan")
+    private LoanApplication loanApplication;
+    
+    public LoanDetails() {}
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getLoanType() { return loanType; }
+    public void setLoanType(String loanType) { this.loanType = loanType; }
+    
+    public Double getLoanAmount() { return loanAmount; }
+    public void setLoanAmount(Double loanAmount) { this.loanAmount = loanAmount; }
+    
+    public Integer getLoanTenure() { return loanTenure; }
+    public void setLoanTenure(Integer loanTenure) { this.loanTenure = loanTenure; }
+    
+    public String getLoanPurpose() { return loanPurpose; }
+    public void setLoanPurpose(String loanPurpose) { this.loanPurpose = loanPurpose; }
+    
+    public LoanApplication getLoanApplication() { return loanApplication; }
+    public void setLoanApplication(LoanApplication loanApplication) { this.loanApplication = loanApplication; }
+}
+
+// DocumentDetails.java
+package com.scb.Loan_Origination.Loan_Origination.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "document_details")
+public class DocumentDetails {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String panCardPath;
+    private String aadhaarCardPath;
+    private String salarySlipPath;
+    private String bankStatementPath;
+    private String photoPath;
+    
+    @OneToOne
+    @JoinColumn(name = "loan_application_id")
+    @JsonBackReference("application-document")
+    private LoanApplication loanApplication;
+    
+    public DocumentDetails() {}
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getPanCardPath() { return panCardPath; }
+    public void setPanCardPath(String panCardPath) { this.panCardPath = panCardPath; }
+    
+    public String getAadhaarCardPath() { return aadhaarCardPath; }
+    public void setAadhaarCardPath(String aadhaarCardPath) { this.aadhaarCardPath = aadhaarCardPath; }
+    
+    public String getSalarySlipPath() { return salarySlipPath; }
+    public void setSalarySlipPath(String salarySlipPath) { this.salarySlipPath = salarySlipPath; }
+    
+    public String getBankStatementPath() { return bankStatementPath; }
+    public void setBankStatementPath(String bankStatementPath) { this.bankStatementPath = bankStatementPath; }
+    
+    public String getPhotoPath() { return photoPath; }
+    public void setPhotoPath(String photoPath) { this.photoPath = photoPath; }
+    
+    public LoanApplication getLoanApplication() { return loanApplication; }
+    public void setLoanApplication(LoanApplication loanApplication) { this.loanApplication = loanApplication; }
+}
+
+// ExistingLoanDetails.java
+package com.scb.Loan_Origination.Loan_Origination.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
+@Table(name = "exiting_loan_details")
+public class ExistingLoanDetails {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String fullName;
+    private String loanType;
+    private String contactNumber;
+    private String lender;
+    private String email;
+    private BigDecimal outstandingAmount;
+    private String address;
+    private Integer emiTenure;
+    
+    @OneToOne
+    @JoinColumn(name = "loan_application_id")
+    @JsonBackReference("application-existing")
+    private LoanApplication loanApplication;
+    
+    public ExistingLoanDetails() {}
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    
+    public String getLoanType() { return loanType; }
+    public void setLoanType(String loanType) { this.loanType = loanType; }
+    
+    public String getContactNumber() { return contactNumber; }
+    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
+    
+    public String getLender() { return lender; }
+    public void setLender(String lender) { this.lender = lender; }
+    
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    
+    public BigDecimal getOutstandingAmount() { return outstandingAmount; }
+    public void setOutstandingAmount(BigDecimal outstandingAmount) { this.outstandingAmount = outstandingAmount; }
+    
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    
+    public Integer getEmiTenure() { return emiTenure; }
+    public void setEmiTenure(Integer emiTenure) { this.emiTenure = emiTenure; }
+    
+    public LoanApplication getLoanApplication() { return loanApplication; }
+    public void setLoanApplication(LoanApplication loanApplication) { this.loanApplication = loanApplication; }
+}
+
+// ReferenceDetails.java
+package com.scb.Loan_Origination.Loan_Origination.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "reference_details")
+public class ReferenceDetails {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String fullName;
+    private String relationshipWithApplicant;
+    private String contactNumber;
+    private String address;
+    
+    @OneToOne
+    @JoinColumn(name = "loan_application_id")
+    @JsonBackReference("application-reference")
+    private LoanApplication loanApplication;
+    
+    public ReferenceDetails() {}
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+    
+    public String getRelationshipWithApplicant() { return relationshipWithApplicant; }
+    public void setRelationshipWithApplicant(String relationshipWithApplicant) { this.relationshipWithApplicant = relationshipWithApplicant; }
+    
+    public String getContactNumber() { return contactNumber; }
+    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
+    
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    
+    public LoanApplication getLoanApplication() { return loanApplication; }
+    public void setLoanApplication(LoanApplication loanApplication) { this.loanApplication = loanApplication; }
+}
